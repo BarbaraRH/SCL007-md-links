@@ -3,7 +3,6 @@
 };
  */
 
-
 const readline = require('readline');
 const fs = require('fs');
 
@@ -13,16 +12,12 @@ let settings = {
 
 const myInterface = readline.createInterface(settings); 
 
-const printUrl = (data) => {
-  splittedData = data.split(' ');
-  for (let i = 0; i<splittedData.length; i++) {
-    if (splittedData[i].includes("http") === true){
-      console.log(splittedData[i])
-    }    
-  }    
+const printUrl = (line) => {
+  let linkMd = line.match(/\[.+\]\(.+\)/g);  
+  if (line.includes(linkMd)){
+    console.log(linkMd[0]);  
+  }     
 };
 
 myInterface.on('line', printUrl);   
-
-
 
