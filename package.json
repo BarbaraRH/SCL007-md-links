@@ -2,6 +2,11 @@
   "name": "md-links",
   "version": "0.1.0",
   "dependencies": {
-    "url-exists": "^1.0.3"
+    "promised-url-exists": "^1.0.7",
+    "url-exists": "^1.0.3",
+    "url-exists-deep": "^1.1.1",
+    "url-exists-promise": "^1.0.2",
+    "valid-url": "^1.0.9",
+    "xmlhttprequest": "^1.8.0"
   }
 }
