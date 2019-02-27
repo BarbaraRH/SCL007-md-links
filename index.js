@@ -192,7 +192,7 @@ const mdLinks = (path) => {
     let getStatus = (urlObjResolve) => {
       return fetch(match[1])
         .then(res => {
-          urlObjResolve.status = res.text();
+          urlObjResolve.status = res.status;
           return Promise.resolve(urlObjResolve);
         })
     }
@@ -209,67 +209,17 @@ const mdLinks = (path) => {
   myInterface.on('line', printUrl)  
 }
 
-/* mdLinks("./README.md") */ 
-
-
 /* fetch('https://github.com/')
     .then(res => res.text())
     .then(body => console.log(body.substring(0, 7000))); */
 
-
-/* const testFolder = './tests/';
-
-fs.readdirSync(testFolder).forEach(file => {
-  console.log(file);
-});  */
-
-
-
-/* console.log(fs.lstatSync("README.md").isDirectory()) */
-
-var forExtension = require('path');
-
-const myFunction = (path) => {
-  if (fs.lstatSync(path).isDirectory() === true){
-    fs.readdirSync(path).forEach(file => {
-      if (fs.lstatSync(file).isDirectory() === true){
-        myFunction(file);
-      }else if(forExtension.extname(file) === ".md"){
-        myFunction(file);
-      } else {
-        console.log("no .md files in this directory")
-      }
-    });
-  } else if(fs.lstatSync(path).isFile() === true && forExtension.extname(path) === ".md"){
-    console.log("hola soy un archivo .md")
-  }
-}
-
-/* myFunction("./prueba") */  
-
-/* const fileOrDirectory = (path) => {
-  if (fs.lstatSync(path).isDirectory() === true){
-    console.log("soy una carpeta");
-    fs.readdirSync(path).forEach(file => {
-      console.log(file); 
-      if (fs.lstatSync(path + "/" + file).isDirectory() === true){
-        console.log("soy una carpeta") 
-      } else if (forExtension.extname(path + "/" + file) === ".md"){
-        console.log("soy un archivo .md")
-      } else {
-        console.log("soy un archivo cualquiera")
-      }    
-    }); 
-  } else if (fs.lstatSync(path).isFile() === true && forExtension.extname(path) === ".md"){
-    console.log("hola soy un archivo .md")
-  }
-} */
+let forExtension = require('path');
 
 const fileOrDirectory = (path) => {
   if (fs.lstatSync(path).isDirectory() === true){
-    console.log("soy una carpeta");
+    /* console.log("soy una carpeta"); */
     fs.readdirSync(path).forEach(file => {
-      console.log(file); 
+      /* console.log(file); */ 
       if (fs.lstatSync(path + "/" + file).isDirectory() === true || forExtension.extname(path + "/" + file) === ".md"){
         fileOrDirectory(path + "/" + file); 
       } /* else {
@@ -277,22 +227,13 @@ const fileOrDirectory = (path) => {
       }  */   
     }); 
   } else if (fs.lstatSync(path).isFile() === true && forExtension.extname(path) === ".md"){
-    console.log("hola soy un archivo .md")
+    mdLinks(path)
   }
 }
 
 fileOrDirectory("./prueba");  
 
-/* fs.readdirSync("./prueba").forEach(file => {
-  console.log(file); 
-  if (fs.lstatSync("./prueba/" + file).isDirectory() === true){
-    console.log("soy una carpeta") 
-  } else if (forExtension.extname("./prueba/" + file) === ".md"){
-    console.log("soy un archivo .md")
-  } else {
-    console.log("soy un archivo cualquiera")
-  }    
-});  */
+
 
 
 
