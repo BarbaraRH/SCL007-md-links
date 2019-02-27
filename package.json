@@ -3,12 +3,6 @@
   "version": "0.1.0",
   "dependencies": {
     "node-fetch": "^2.3.0",
-    "promised-url-exists": "^1.0.7",
-    "request": "^2.88.0",
-    "url-exists": "^1.0.3",
-    "url-exists-deep": "^1.1.1",
-    "url-exists-promise": "^1.0.2",
-    "valid-url": "^1.0.9",
-    "xmlhttprequest": "^1.8.0"
+    "path": "^0.12.7"
   }
 }
