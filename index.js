@@ -27,9 +27,9 @@ const validateUrl = (url) => {
   })
 }
 
- 
+let promiseArrStore = [];
 
-const fileOrDirectory = (path) => {
+const fileOrDirectory = (path) => {  
   if (fs.lstatSync(path).isDirectory() === true){
     /* console.log("soy una carpeta"); */
     fs.readdirSync(path).forEach(file => {
@@ -41,9 +41,14 @@ const fileOrDirectory = (path) => {
       }  */   
     }); 
   } else if (fs.lstatSync(path).isFile() === true && forExtension.extname(path) === ".md"){
-    extractLink(path)
+    promiseArrStore.push(extractLink(path));
   }
 }
+
+
+
+
+
 
 
 const extractLink = (path) => {
@@ -57,6 +62,38 @@ const extractLink = (path) => {
   urls.push({"path":path, "name": linkName[1], "link":match[1]}); 
   }
 
+  const promiseArr = []
+  for (let i = 0; i < urls.length; i++) {
+    promiseArr.push(validateUrl({"path":urls[i].path, "name": urls[i].name, "link":urls[i].link}))
+  }
+  return promiseArr; 
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+/* Promise.all(promiseArr).then(console.log); */
+
+
+//Funcional del momento
+/* const extractLink = (path) => {
+  let links = fs.readFileSync(path).toString().match(/\[.+\]\(.+\)/gm);
+  let urls = []
+  for (let i = 0; i < links.length; i++){
+    let regExp = /\((.+)\)/g; 
+    let regExpName = /\[(.+)\]/g;
+    let match = regExp.exec(links[i]);
+    let linkName = regExpName.exec(links[i]);
+  urls.push({"path":path, "name": linkName[1], "link":match[1]}); 
+  }
 
   const promiseArr = []
   for (let i = 0; i < urls.length; i++) {
@@ -64,7 +101,9 @@ const extractLink = (path) => {
   }
 
   Promise.all(promiseArr).then(console.log);
-} 
+}  */
+
+
 
 //falla fileOrDirectory al poner espacios en expresión regular ??????
 /*const extractLink = (path) => { 
@@ -87,7 +126,9 @@ const extractLink = (path) => {
 
 
 
-fileOrDirectory("./prueba");    
+fileOrDirectory("./prueba");   
+
+Promise.all([].concat.apply([], promiseArrStore)).then(console.log)
 
 
 
