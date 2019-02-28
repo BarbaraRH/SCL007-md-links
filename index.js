@@ -11,6 +11,23 @@ const fs = require('fs');
 const fetch = require('node-fetch')
 const forExtension = require('path');
 
+let path = process.argv[2];
+let options = process.argv[3]
+
+
+const mdLinks = (path, options) => {
+  if (options === "--validate"){
+    fileOrDirectory(path);
+    Promise.all([].concat.apply([], promiseArrStore)).then(console.log);
+  } else if (options === "--stats"){
+    console.log("aún no me programan");
+  } else {
+    fileOrDirectory(path);
+    Promise.all([].concat.apply([], promiseArrStore)).then(console.log);
+  }
+}
+
+
 const validateUrl = (url) => {
   return new Promise((resolve) => {
     fetch(url.link)
@@ -22,7 +39,7 @@ const validateUrl = (url) => {
         }
       })
       .catch((err) => {
-        return resolve({...url, status: 'failed connection'})
+        return resolve({...url, status:'failed connection'})
       }) 
   })
 }
@@ -47,10 +64,6 @@ const fileOrDirectory = (path) => {
 
 
 
-
-
-
-
 const extractLink = (path) => {
   let links = fs.readFileSync(path).toString().match(/\[.+\]\(.+\)/gm);
   let urls = []
@@ -69,68 +82,12 @@ const extractLink = (path) => {
   return promiseArr; 
 } 
 
+/* fileOrDirectory(path); */    
 
 
+/* Promise.all([].concat.apply([], promiseArrStore)).then(console.log) */
 
-
-
-
-
-
-
-
-
-/* Promise.all(promiseArr).then(console.log); */
-
-
-//Funcional del momento
-/* const extractLink = (path) => {
-  let links = fs.readFileSync(path).toString().match(/\[.+\]\(.+\)/gm);
-  let urls = []
-  for (let i = 0; i < links.length; i++){
-    let regExp = /\((.+)\)/g; 
-    let regExpName = /\[(.+)\]/g;
-    let match = regExp.exec(links[i]);
-    let linkName = regExpName.exec(links[i]);
-  urls.push({"path":path, "name": linkName[1], "link":match[1]}); 
-  }
-
-  const promiseArr = []
-  for (let i = 0; i < urls.length; i++) {
-    promiseArr.push(validateUrl({"path":urls[i].path, "name": urls[i].name, "link":urls[i].link}))
-  }
-
-  Promise.all(promiseArr).then(console.log);
-}  */
-
-
-
-//falla fileOrDirectory al poner espacios en expresión regular ??????
-/*const extractLink = (path) => { 
-
-  let links = fs.readFileSync(path).toString().match(/\s\[.+\]\(.+\)\s/gm); 
-  let urls = []
-    for (let i = 0; i < links.length; i++){
-      let regExp = /\((.+)\)/g; 
-      let match = regExp.exec(links[i]);
-    urls.push({"path":path, "link":match[1]});
-    }
-  
-    const promiseArr = []
-    for (let i = 0; i < urls.length; i++) {
-      promiseArr.push(validateUrl({"path":urls[i].path, "link":urls[i].link}))
-    }
-  
-    Promise.all(promiseArr).then(console.log);  
-}*/
-
-
-
-fileOrDirectory("./prueba");   
-
-Promise.all([].concat.apply([], promiseArrStore)).then(console.log)
-
-
+mdLinks(path, options);
 
 
 
