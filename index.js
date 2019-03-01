@@ -12,17 +12,17 @@ const fetch = require('node-fetch')
 const forExtension = require('path');
 
 let path = process.argv[2];
-let options = process.argv[3]
+let options = process.argv[3];
 
 
 const mdLinks = (path, options) => {
   if (options === "--validate"){
-    fileOrDirectory(path);
+    fileOrDirectory(path, "--validate");
     Promise.all([].concat.apply([], promiseArrStore)).then(console.log);
   } else if (options === "--stats"){
     console.log("aún no me programan");
   } else {
-    fileOrDirectory(path);
+    fileOrDirectory(path, options);
     Promise.all([].concat.apply([], promiseArrStore)).then(console.log);
   }
 }
@@ -58,13 +58,13 @@ const fileOrDirectory = (path) => {
       }  */   
     }); 
   } else if (fs.lstatSync(path).isFile() === true && forExtension.extname(path) === ".md"){
-    promiseArrStore.push(extractLink(path));
+    promiseArrStore.push(extractLink(path, options));
   }
 }
 
 
 
-const extractLink = (path) => {
+const extractLink = (path, options) => {
   let links = fs.readFileSync(path).toString().match(/\[.+\]\(.+\)/gm);
   let urls = []
   for (let i = 0; i < links.length; i++){
@@ -72,20 +72,19 @@ const extractLink = (path) => {
     let regExpName = /\[(.+)\]/g;
     let match = regExp.exec(links[i]);
     let linkName = regExpName.exec(links[i]);
-  urls.push({"path":path, "name": linkName[1], "link":match[1]}); 
+    urls.push({"path":path, "name": linkName[1], "link":match[1]}); 
   }
 
-  const promiseArr = []
-  for (let i = 0; i < urls.length; i++) {
-    promiseArr.push(validateUrl({"path":urls[i].path, "name": urls[i].name, "link":urls[i].link}))
-  }
-  return promiseArr; 
+  if (options === "--validate"){
+    const promiseArr = []
+    for (let i = 0; i < urls.length; i++) {
+      promiseArr.push(validateUrl({"path":urls[i].path, "name": urls[i].name, "link":urls[i].link}))
+    }
+    return promiseArr; 
+  } else {
+    return urls;
+  } 
 } 
-
-/* fileOrDirectory(path); */    
-
-
-/* Promise.all([].concat.apply([], promiseArrStore)).then(console.log) */
 
 mdLinks(path, options);
 
