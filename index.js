@@ -94,7 +94,7 @@ if(require.main === module){
   mdLinks(path, options);
 }
 
-module.exports = {mdLinks}; 
+module.exports = mdLinks; 
 
 
 
