@@ -10,6 +10,7 @@
 const fs = require('fs');
 const fetch = require('node-fetch')
 const forExtension = require('path');
+const resolve = require('path').resolve
 
 
 const mdLinks = (path, options) => {
@@ -46,7 +47,9 @@ const functionCluster = (path, options, promiseArrStore) => {
     })
   }
   
-  const fileOrDirectory = (path) => {  
+  const fileOrDirectory = (path) => { 
+    path = resolve(path);
+    console.log(path); 
     if (fs.lstatSync(path).isDirectory() === true){
       /* console.log("soy una carpeta"); */
       fs.readdirSync(path).forEach(file => {
