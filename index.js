@@ -1,12 +1,5 @@
 #!/usr/bin/env node
 
-
-/* module.exports = () => {
-  // ...
-};
- */
-
-
 const fs = require('fs');
 const fetch = require('node-fetch')
 const forExtension = require('path');
@@ -19,15 +12,13 @@ const mdLinks = (path, options) => {
     functionCluster(path, "--validate", promiseArrStore);
     Promise.all([].concat.apply([], promiseArrStore)).then(console.log);
   } else if (options === "--stats"){
-    /* Promise.all([].concat.apply([], promiseArrStore))
-      .then(res => res.json()) */
-
+    functionCluster(path, options, promiseArrStore);
+    Promise.all([].concat.apply([], promiseArrStore)).then(res => console.log("number of links: " + res.length));
   } else {
     functionCluster(path, options, promiseArrStore);
     Promise.all([].concat.apply([], promiseArrStore)).then(console.log);
   }
 }
-
 
 const functionCluster = (path, options, promiseArrStore) => {
 
@@ -35,11 +26,7 @@ const functionCluster = (path, options, promiseArrStore) => {
     return new Promise((resolve) => {
       fetch(url.link)
         .then((res) => {
-          if (res.status === 200) {
-            return resolve({...url, status:[res.status, "OK"]})
-          } else {
-            return resolve({...url, status:[res.status, "broken"]})
-          }
+          return resolve({...url, status:[res.status, res.ok]})          
         })
         .catch((err) => {
           return resolve({...url, status:'failed connection'})
@@ -48,17 +35,12 @@ const functionCluster = (path, options, promiseArrStore) => {
   }
   
   const fileOrDirectory = (path) => { 
-    path = resolve(path);
-    console.log(path); 
+    path = resolve(path); 
     if (fs.lstatSync(path).isDirectory() === true){
-      /* console.log("soy una carpeta"); */
       fs.readdirSync(path).forEach(file => {
-        /* console.log(file); */ 
         if (fs.lstatSync(path + "/" + file).isDirectory() === true || forExtension.extname(path + "/" + file) === ".md"){
           fileOrDirectory(path + "/" + file); 
-        } /* else {
-          console.log("soy un archivo cualquiera")
-        }  */   
+        }   
       }); 
     } else if (fs.lstatSync(path).isFile() === true && forExtension.extname(path) === ".md"){
       promiseArrStore.push(extractLink(path, options));
@@ -90,7 +72,6 @@ const functionCluster = (path, options, promiseArrStore) => {
   fileOrDirectory(path, options);
 }
 
-/* mdLinks(path, options); */
 if(require.main === module){
   let path = process.argv[2];
   let options = process.argv[3];
@@ -98,7 +79,3 @@ if(require.main === module){
 }
 
 module.exports = mdLinks; 
-
-
-
-
